@@ -1,5 +1,5 @@
 ## How to run edgar crawler?
 ```sh
-cd ./edgar
+cd ./edgar/edgar
 scrapy crawl edgarspider
 ```
