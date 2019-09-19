@@ -8,7 +8,7 @@ from scrapy.shell import inspect_response
 class EdgarfetchSpider(scrapy.Spider):
     name = 'edgarfetch'
     # allowed_domains = ['https://en.wikipedia.org/wiki/List_of_S%26P_500_companies']
-    start_urls = ['https://en.wikipedia.org/wiki/List_of_S%26P_500_companies/']
+    start_urls = ['https://en.wikipedia.org/wiki/List_of_S%26P_500_companies']
     custom_settings = {
         'ITEM_PIPELINES': {
                 'edgar.pipelines.EdgarPipeline': 400
