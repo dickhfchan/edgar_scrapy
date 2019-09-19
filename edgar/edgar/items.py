@@ -16,4 +16,7 @@ class EdgarItem(scrapy.Item):
     body_url = scrapy.Field()
     seven_body = scrapy.Field()
     sevenA_body = scrapy.Field()
-    filing_date = scrapy.Field()
+    company = scrapy.Field()
+    date = scrapy.Field()
+    type = scrapy.Field()
+    body = scrapy.Field()

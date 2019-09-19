@@ -33,7 +33,7 @@ class EdgarspiderSpider(scrapy.Spider):
             if dates[inx][:4] == '2009':
                 break
             documents = f'https://www.sec.gov{document_urls[inx]}'
-            yield scrapy.Request(url=documents, callback=self.parse_year_url,meta = {'clk':clk,'clk_url':clk_url,'filing_date':dates[inx]})
+            yield scrapy.Request(url=documents, callback=self.parse_year_url,meta = {'clk':clk,'clk_url':clk_url,'date':dates[inx]})
     def parse_year_url(self, response):
         # get body all types
         types = response.xpath('//table/tr/td[4]/text()').extract()
@@ -41,19 +41,19 @@ class EdgarspiderSpider(scrapy.Spider):
         Documents = response.xpath('//table/tr/td[3]/a/@href').extract()
         clk = response.meta['clk']
         clk_url = response.meta['clk_url']
-        filing_date = response.meta['filing_date']
+        date = response.meta['date']
         ten_year_url = response.url
         for inx in range(len(types)):
             # get type is 10-k the url
             if types[inx] == '10-K':
                 pageurl = f'https://www.sec.gov{Documents[inx]}'
-                yield scrapy.Request(url=pageurl, callback=self.parse_bodys,meta = {'clk':clk,'clk_url':clk_url,'filing_date':filing_date,'ten_year_url':ten_year_url})
+                yield scrapy.Request(url=pageurl, callback=self.parse_bodys,meta = {'clk':clk,'clk_url':clk_url,'date':date,'ten_year_url':ten_year_url})
     def parse_bodys(self, response):
         item = EdgarItem()
         item['clk'] = response.meta['clk']
         item['clk_url'] = response.meta['clk_url']
         item['ten_year_url'] = response.meta['ten_year_url']
-        item['filing_date'] = response.meta['filing_date']
+        item['date'] = response.meta['date']
         url = response.url
         # Judge url end is pdf format,Do not handle such pdf's url
         if url.endswith('pdf'):
@@ -68,7 +68,7 @@ class EdgarspiderSpider(scrapy.Spider):
             # re Filter all html tags
             bodys = re_h.sub(' ',response.text)
             # re Match all html comment tags,eg:<!--123-->
-            re_comment=re.compile('<!--[^>]*-->') 
+            re_comment=re.compile('<!--[^>]*-->')
             # re Filter all html comment tags
             body = re_comment.sub('',bodys)
             # re Filter all illegal characters
