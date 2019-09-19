@@ -14,6 +14,7 @@ class EdgarspiderSpider(scrapy.Spider):
                 'edgar.pipelines.EdgarPipeline': 400
                 }
         }
+              
     def parse(self, response):
         # get clks datas
         clks = response.xpath('//*[@id="constituents"]/tbody/tr/td[8]/text()').extract()
