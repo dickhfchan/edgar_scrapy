@@ -78,5 +78,7 @@ class EdgarfetchSpider(scrapy.Spider):
             bodys = re_h.sub(' ',response.text)
             re_comment=re.compile('<!--[^>]*-->')
             body = re_comment.sub('',bodys)
-            item['body'] = body
+            s = r'(\n|\r|\xa0|/s/|\t|&nbsp;|Table of Contents|&#\d*;)'
+            content = re.sub(s,' ',body)
+            item['body'] = content
             yield item
