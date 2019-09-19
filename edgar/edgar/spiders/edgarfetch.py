@@ -56,12 +56,13 @@ class EdgarfetchSpider(scrapy.Spider):
         clk_url = response.meta['clk_url']
         date = response.meta['date']
         company = response.meta['company']
+        Type = response.meta['Type']
         ten_year_url = response.url
         for inx in range(len(types)):
             if types[inx] == '10-K':
                 pageurl = f'https://www.sec.gov{Documents[inx]}'
                 yield scrapy.Request(url=pageurl, callback=self.parse_bodys,
-                        meta = {'clk':clk,'company':company,'clk_url':clk_url,'date':date,'ten_year_url':ten_year_url})
+                        meta = {'clk':clk,'Type':Type,'company':company,'clk_url':clk_url,'date':date,'ten_year_url':ten_year_url})
     def parse_bodys(self, response):
         item = EdgarItem()
         item['clk'] = response.meta['clk']
