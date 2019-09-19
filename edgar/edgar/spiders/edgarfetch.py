@@ -28,6 +28,7 @@ class EdgarfetchSpider(scrapy.Spider):
         dates = response.xpath('//table/tr/td[4]/text()').extract()[2:]
         clk = response.meta['clk']
         company = response.meta['company']
+        Type = response.meta['Type']
         clk_url = response.url
         if dates:
             document_urls = response.xpath('//table/tr/td[2]/a[1]/@href').extract()
@@ -36,7 +37,7 @@ class EdgarfetchSpider(scrapy.Spider):
                     break
                 documents = f'https://www.sec.gov{document_urls[inx]}'
                 yield scrapy.Request(url=documents, callback=self.parse_year_url,
-                        meta = {'clk':clk,'company':company,'clk_url':clk_url,'date':dates[inx]})
+                        meta = {'clk':clk,'Type':Type,'company':company,'clk_url':clk_url,'date':dates[inx]})
         else:
             item = EdgarItem()
             item['clk'] = clk
@@ -46,6 +47,7 @@ class EdgarfetchSpider(scrapy.Spider):
             item['ten_year_url'] = 'Non'
             item['body_url'] = 'Non'
             item['body'] = 'Non'
+            item['type'] = Type
             yield item
     def parse_year_url(self, response):
         types = response.xpath('//table/tr/td[4]/text()').extract()
@@ -67,6 +69,7 @@ class EdgarfetchSpider(scrapy.Spider):
         item['ten_year_url'] = response.meta['ten_year_url']
         item['date'] = response.meta['date']
         item['company'] = response.meta['company']
+        item['type'] = response.meta['Type']
         url = response.url
         if url.endswith('pdf'):
             item['body_url'] = url
