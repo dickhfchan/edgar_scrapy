@@ -13,5 +13,5 @@ for res in date.index.values:
     print(row)
     data.append(row)
     session.execute("""insert into hangseng (constituent_type,constituent_name,code)values(%s ,%s ,%s)""",
-                    ('50 xlsx',str(row['Constituent Name']),str(row['code'])))
+                    ('50 xlsx',str(row['Constituent Name']),str(row['Code'])))
 print('out file data',len(data))
