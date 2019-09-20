@@ -6,7 +6,7 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf8')
 server = ['52.76.70.227']
 cluster = Cluster(server)
 session = cluster.connect('scrapy')
-date = pd.read_csv('/home/ubuntu/edgar_scrapy/edgar/edgar/out.csv',sep = '~')
+date = pd.read_csv('/home/ubuntu/edgar_scrapy/edgar/edgar/out.xlsx',sep = '~')
 data = []
 for res in date.index.values:
     row = date.ix[res,date.columns.values].to_dict()
