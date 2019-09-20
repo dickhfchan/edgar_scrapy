@@ -6,9 +6,6 @@
 # See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 from scrapy.exporters import CsvItemExporter
 from cassandra.cluster import Cluster
-import sys
-import io
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf8')
 
 class EdgarPipeline(object):
     def open_spider(self, spider):
@@ -27,9 +24,9 @@ class EdgarPipeline(object):
 class EdgarfetchPipeline(object):
 
     def __init__(self):
-        server = ['52.76.70.227']
-        cluster = Cluster(server)
-        session = cluster.connect('scrapy')
+        self.server = ['52.76.70.227']
+        self.cluster = Cluster(server)
+        self.session = cluster.connect('scrapy')
 
     def process_item(self, item, spider):
         self.session.execute("""insert into edgars (company,date,type,clk,clk_url,ten_year_url,body_url,body)values(%s ,%s ,%s, %s, %s ,%s ,%s, %s)""",
