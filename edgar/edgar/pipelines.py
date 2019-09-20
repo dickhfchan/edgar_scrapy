@@ -33,3 +33,15 @@ class EdgarfetchPipeline(object):
                         (str(item['company']),str(item['date']),str(item['type']),str(item['clk']), str(item['clk_url']),str(item['ten_year_url']),
                          str(item['body_url']),str(item['body'])))
         return item
+
+class HangsengPipeline(object):
+
+    def __init__(self):
+        self.server = ['52.76.70.227']
+        self.cluster = Cluster(self.server)
+        self.session = self.cluster.connect('scrapy')
+
+    def process_item(self, item, spider):
+        self.session.execute("""insert into hangseng (constituent_type,constituent_name,code)values(%s ,%s ,%s)""",
+                        (str(item['constituent_type']),str(item['constituent_name']),str(item['code'])))
+        return item
