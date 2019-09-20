@@ -26,7 +26,7 @@ class EdgarfetchPipeline(object):
     def __init__(self):
         self.server = ['52.76.70.227']
         self.cluster = Cluster(self.server)
-        self.session = cluster.connect('scrapy')
+        self.session = self.cluster.connect('scrapy')
 
     def process_item(self, item, spider):
         self.session.execute("""insert into edgars (company,date,type,clk,clk_url,ten_year_url,body_url,body)values(%s ,%s ,%s, %s, %s ,%s ,%s, %s)""",
