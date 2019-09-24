@@ -9,8 +9,8 @@ server = ['52.76.70.227']
 cluster = Cluster(server)
 session = cluster.connect('scrapy')
 result = pd.DataFrame(list(session.execute('select code from hangseng')))
-codes = [code for code in result]
-print(codes)
+# codes = [code for code in result]
+print(result['code'])
 data = {
     'category': '0',
     'market': 'SEHK',
