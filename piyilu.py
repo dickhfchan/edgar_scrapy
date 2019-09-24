@@ -1,5 +1,16 @@
 import requests
 from lxml import etree
+import pandas as pd
+import sys
+import io
+from cassandra.cluster import Cluster
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf8')
+server = ['52.76.70.227']
+cluster = Cluster(server)
+session = cluster.connect('scrapy')
+cql = 'select code from hangseng'
+result = pd.DataFrame(list(session.execute(cql)))
+print(result)
 data = {
     'category': '0',
     'market': 'SEHK',
@@ -28,16 +39,16 @@ header = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image
 'Sec-Fetch-User': '?1',
 'Upgrade-Insecure-Requests': '1',
 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36'}
-response = requests.post(url='https://www1.hkexnews.hk/search/titlesearch.xhtml?lang=en',data = data,headers = header)
-s=etree.HTML(response.text)
-dates = s.xpath('//table/tbody/tr/td[1]/text()')
-codes = s.xpath('//table/tbody/tr/td[2]/text()')
-abbreviations = s.xpath('//table/tbody/tr/td[3]/text()')
-urls = s.xpath('//table/tbody/tr/td[4]/div[@class="doc-link"]/a/@href')
-print(len(urls))
-print(dates)
-print(codes)
-print(abbreviations)
-print(urls)
-url = f'https://www1.hkexnews.hk{urls[0]}'
-print(url)
+# response = requests.post(url='https://www1.hkexnews.hk/search/titlesearch.xhtml?lang=en',data = data,headers = header)
+# s=etree.HTML(response.text)
+# dates = s.xpath('//table/tbody/tr/td[1]/text()')
+# codes = s.xpath('//table/tbody/tr/td[2]/text()')
+# abbreviations = s.xpath('//table/tbody/tr/td[3]/text()')
+# urls = s.xpath('//table/tbody/tr/td[4]/div[@class="doc-link"]/a/@href')
+# print(len(urls))
+# print(dates)
+# print(codes)
+# print(abbreviations)
+# print(urls)
+# url = f'https://www1.hkexnews.hk{urls[0]}'
+# print(url)
