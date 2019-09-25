@@ -63,12 +63,12 @@ for inx,url in enumerate(urls):
     link = f'https://www1.hkexnews.hk{url}'
     print(link)
     r = requests.get(link)
-    fo = open(r"D:\edgar_scrapy\need.pdf",'wb')
+    fo = open(r"/home/ubuntu/edgar_scrapy/need.pdf",'wb')
     fo.write(r.content)
     fo.close()
     articles = ''
     try:
-        with pdfplumber.open(r"D:/edgar_scrapy/need.pdf") as pdf:
+        with pdfplumber.open(r"/home/ubuntu/edgar_scrapy/need.pdf") as pdf:
             page_count = len(pdf.pages)
             print(page_count)
             for page in pdf.pages:
@@ -77,7 +77,7 @@ for inx,url in enumerate(urls):
                 bodys = body.replace('\n','') if len(spot)>5 else body
                 articles += bodys
     except:
-        doc = fitz.open(r"D:/edgar_scrapy/need.pdf")
+        doc = fitz.open(r"/home/ubuntu/edgar_scrapy/need.pdf")
         for page in doc:
             body = f'---------- The {page.number} page ----------\n' + page.getText()
             articles += body
