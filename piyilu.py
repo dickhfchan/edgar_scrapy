@@ -78,4 +78,4 @@ for inx,url in enumerate(urls):
         doc.close()
     finally:
         session.execute("insert into hkexnews (url,date,code,abbreviation,body)values(%s ,%s ,%s, %s)",
-                    (link,dates[inx],codes[inx],abbreviations[inx],body))
+                    (link,dates[inx],str(codes[inx]),abbreviations[inx],str(body))
