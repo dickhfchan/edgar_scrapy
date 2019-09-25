@@ -69,12 +69,12 @@ for inx,url in enumerate(urls):
             print(page_count)
             for page in pdf.pages:
                 print(f'---------- The {page.page_number} page ----------')
-                body = page.extract_text()
+                body = f'---------- The {page.number} page ----------\n' + page.extract_text()
     except:
         doc = fitz.open(r"/home/ubuntu/edgar_scrapy/need.pdf")
         for page in doc:
             print(f'---------- The {page.number} page ----------')
-            body = page.getText()
+            body = f'---------- The {page.number} page ----------\n' + page.getText()
         doc.close()
     finally:
         session.execute("insert into hkexnews (url,date,code,abbreviation,body)values(%s ,%s ,%s, %s)",
