@@ -14,7 +14,7 @@ result = pd.DataFrame(list(session.execute('select code from hangseng')))
 codes = [code for code in result['code']]
 number = 0
 for code in codes:
-    r = requests.get('https://www1.hkexnews.hk/search/prefix.do?&callback=callback&lang=ZH&type=A&name={code}&market=SEHK&_=1569225522122')
+    r = requests.get(f'https://www1.hkexnews.hk/search/prefix.do?&callback=callback&lang=ZH&type=A&name={code}&market=SEHK&_=1569225522122')
     ids = r.text.lstrip('callback(').strip().rstrip(');')
     stockIds = json.loads(ids)
     stockId = [stockInfo for stockInfo in stockIds['stockInfo']][0]
