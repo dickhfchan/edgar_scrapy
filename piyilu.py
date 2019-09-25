@@ -6,7 +6,7 @@ import sys
 import io
 import pdfplumber
 from cassandra.cluster import Cluster
-# sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf8')
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf8')
 server = ['52.76.70.227']
 cluster = Cluster(server)
 session = cluster.connect('scrapy')
