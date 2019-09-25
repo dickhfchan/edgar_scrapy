@@ -64,14 +64,14 @@ for inx,url in enumerate(urls):
     fo.write(r.content)
     fo.close()
     try:
-        with pdfplumber.open(r"D:\edgar_scrapy\need.pdf") as pdf:
+        with pdfplumber.open(r"/home/ubuntu/edgar_scrapy/need.pdf") as pdf:
             page_count = len(pdf.pages)
             print(page_count)
             for page in pdf.pages:
                 print(f'---------- The {page.page_number} page ----------')
                 body = page.extract_text()
     except:
-        doc = fitz.open(r"D:\edgar_scrapy\need.pdf")
+        doc = fitz.open(r"/home/ubuntu/edgar_scrapy/need.pdf")
         for page in doc:
             print(f'---------- The {page.number} page ----------')
             body = page.getText()
