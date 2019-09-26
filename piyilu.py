@@ -7,6 +7,7 @@ import io
 import pdfplumber
 import fitz
 import re
+import time
 from cassandra.cluster import Cluster
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf8')
