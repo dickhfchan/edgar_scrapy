@@ -67,23 +67,24 @@ for code in codes:
         fo = open(r"/home/ubuntu/edgar_scrapy/need.pdf",'wb')
         fo.write(r.content)
         fo.close()
-        articles = ''
-        try:
-            with pdfplumber.open(r"/home/ubuntu/edgar_scrapy/need.pdf") as pdf:
-                page_count = len(pdf.pages)
-                print('total pages:', page_count)
-                for page in pdf.pages:
-                    spot = re.findall('(\n\w{1}\n)',page.extract_text())
-                    body = f'---------- The {page.number} page ----------\n' + page.extract_text()
-                    bodys = body.replace('\n','') if len(spot)>5 else body
-                    articles += bodys
-        except:
-            doc = fitz.open(r"/home/ubuntu/edgar_scrapy/need.pdf")
-            print('total pages:', doc.pageCount)
-            for page in doc:
-                body = f'---------- The {page.number} page ----------\n' + page.getText()
-                articles += body
-            doc.close()
-        finally:
-            session.execute("insert into hkexnews (url,date,code,abbreviation,body)values(%s ,%s ,%s, %s, %s)",
-                         (link,dates[inx],str(codes[inx]),str(abbreviations[inx]),articles))
+
+articles = ''
+try:
+    with pdfplumber.open(r"/home/ubuntu/edgar_scrapy/need.pdf") as pdf:
+        page_count = len(pdf.pages)
+        print('total pages:', page_count)
+        for page in pdf.pages:
+            spot = re.findall('(\n\w{1}\n)',page.extract_text())
+            body = f'---------- The {page.number} page ----------\n' + page.extract_text()
+            bodys = body.replace('\n','') if len(spot)>5 else body
+            articles += bodys
+except:
+    doc = fitz.open(r"/home/ubuntu/edgar_scrapy/need.pdf")
+    print('total pages:', doc.pageCount)
+    for page in doc:
+        body = f'---------- The {page.number} page ----------\n' + page.getText()
+        articles += body
+    doc.close()
+finally:
+    session.execute("insert into hkexnews (url,date,code,abbreviation,body)values(%s ,%s ,%s, %s, %s)",
+                 (link,dates[inx],str(codes[inx]),str(abbreviations[inx]),articles))
