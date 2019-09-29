@@ -16,7 +16,7 @@ cluster = Cluster(server)
 session = cluster.connect('scrapy')
 # result = pd.DataFrame(list(session.execute('select code from hangseng')))
 # codes = [code for code in result['code']]
-codes = ['884', '285', '5', '1138', '1336', '1336', '1907', '1257', '1898', '3377', '388', '1234', '763', '525', '1905', '1928', '2001', '1883']
+codes = ['2778','6823','1848','906','884']
 
 for code in codes:
     print('current code:', code)
