@@ -11,7 +11,7 @@ class EdgarspiderSpider(scrapy.Spider):
     start_urls = ['https://en.wikipedia.org/wiki/List_of_S%26P_500_companies']
     custom_settings = {
         'ITEM_PIPELINES': {
-                'edgar.pipelines.EdgarPipeline': 400
+                'edgar.pipelines.Edgarxlsxspider': 400
                 }
         }
 
