@@ -96,8 +96,12 @@ class EdgarspiderSpider(scrapy.Spider):
             seven = re.findall('(Item 7\.[\s\S]+?)Item 7A\.',content,re.I)
             # re Match item 7A content
             sevenA = re.findall('(Item 7A\.[\s\S]+?)Item 8\.',content,re.I)
-            item['seven_body'] = seven[0] if len(seven) == 1 else seven[1]
-            item['sevenA_body'] = sevenA[0] if len(sevenA) == 1 else sevenA[1]
+            try:
+                item['seven_body'] = seven[0] if len(seven) == 1 else seven[1]
+                item['sevenA_body'] = sevenA[0] if len(sevenA) == 1 else sevenA[1]
+            except:
+                item['seven_body'] = 'scrapy type change'
+                item['sevenA_body'] = 'scrapy type change'
             yield item
 #caiyi
     # def parse_year_url(self, response):
