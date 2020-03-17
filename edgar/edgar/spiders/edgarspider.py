@@ -25,15 +25,15 @@ class EdgarspiderSpider(scrapy.Spider):
             # filterurl = f'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK={clks[inx].strip()}&type={Type}&dateb=&owner=include&count=40'
             filterurl = f'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001058090&type=&dateb=&owner=include&count=40'
             yield scrapy.Request(url=filterurl, callback=self.next_page,
-                meta = {'clk':clks[inx], 'company':companys[inx], 'Type':Type})
+                meta = {'clk':'0001058090', 'company':'Chipotle Mexican Grill', 'Type':Type})
     def next_page(self, response):
         next_pages = response.xpath('//input[@value="Next 40"]/@onclick').extract()
         yield scrapy.Request(url=response.url, callback=self.parse_clk_url,
-            meta = {'clk':clks[inx], 'company':companys[inx], 'Type':Type})
+            meta = {'clk':'0001058090', 'company':'Chipotle Mexican Grill', 'Type':Type})
         if len(next_pages) > 0:
             next_p = next_pages[0].split('=',1)[1]
             yield scrapy.Request(url=f'https://www.sec.gov{next_p}', callback=self.parse_clk_url,
-                meta = {'clk':clks[inx], 'company':companys[inx], 'Type':Type})
+                meta = {'clk':'0001058090', 'company':'Chipotle Mexican Grill', 'Type':Type})
     def parse_clk_url(self, response):
         dates = response.xpath('//table/tr/td[4]/text()').extract()[2:]
         clk = response.meta['clk']
