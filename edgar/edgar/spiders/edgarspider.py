@@ -29,11 +29,11 @@ class EdgarspiderSpider(scrapy.Spider):
     def next_page(self, response):
         next_pages = response.xpath('//input[@value="Next 40"]/@onclick').extract()
         yield scrapy.Request(url=response.url, callback=self.parse_clk_url,
-            meta = {'clk':'0001058090', 'company':'Chipotle Mexican Grill', 'Type':Type})
+            meta = {'clk':response.meta['clk'], 'company':response.meta['company'], 'Type':response.meta['Type']})
         if len(next_pages) > 0:
             next_p = next_pages[0].split('=',1)[1]
             yield scrapy.Request(url=f'https://www.sec.gov{next_p}', callback=self.parse_clk_url,
-                meta = {'clk':'0001058090', 'company':'Chipotle Mexican Grill', 'Type':Type})
+                meta = {'clk':response.meta['clk'], 'company':response.meta['company'], 'Type':response.meta['Type']})
     def parse_clk_url(self, response):
         dates = response.xpath('//table/tr/td[4]/text()').extract()[2:]
         clk = response.meta['clk']
