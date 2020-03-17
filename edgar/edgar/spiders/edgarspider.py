@@ -24,7 +24,7 @@ class EdgarspiderSpider(scrapy.Spider):
         for Type in Types:
             # filterurl = f'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK={clks[inx].strip()}&type={Type}&dateb=&owner=include&count=40'
             filterurl = f'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001058090&type=&dateb=&owner=include&count=40'
-            yield scrapy.Request(url=filterurl, callback=self.next_page,
+            yield scrapy.Request(url=filterurl, callback=self.parse_clk_url,
                 meta = {'clk':'0001058090', 'company':'Chipotle Mexican Grill', 'Type':Type})
     def next_page(self, response):
         next_pages = response.xpath('//input[@value="Next 40"]/@onclick').extract()
@@ -48,6 +48,11 @@ class EdgarspiderSpider(scrapy.Spider):
                 documents = f'https://www.sec.gov{document_urls[inx]}'.replace('/ix?doc=','')
                 yield scrapy.Request(url=documents, callback=self.parse_year_url,
                         meta = {'clk':clk,'Type':Type,'company':company,'clk_url':clk_url,'date':dates[inx]})
+        next_pages = response.xpath('//input[@value="Next 40"]/@onclick').extract()
+        if len(next_pages) > 0:
+            next_p = next_pages[0].split('=',1)[1]
+            yield scrapy.Request(url=f'https://www.sec.gov{next_p}'.replace("'",'').replace('"',''), callback=self.parse_clk_url,
+                meta = {'clk':response.meta['clk'], 'company':response.meta['company'], 'Type':response.meta['Type']})
         else:
             item = EdgarItem()
             item['clk'] = clk
