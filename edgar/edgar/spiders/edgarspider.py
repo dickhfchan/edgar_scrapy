@@ -36,7 +36,7 @@ class EdgarspiderSpider(scrapy.Spider):
             for inx in range(len(dates)):
                 if dates[inx][:4] == '2009':
                     break
-                documents = f'https://www.sec.gov{document_urls[inx]}'
+                documents = f'https://www.sec.gov{document_urls[inx]}'.replace('/ix?doc=','')
                 yield scrapy.Request(url=documents, callback=self.parse_year_url,
                         meta = {'clk':clk,'Type':Type,'company':company,'clk_url':clk_url,'date':dates[inx]})
         else:
@@ -74,34 +74,43 @@ class EdgarspiderSpider(scrapy.Spider):
         item['company'] = response.meta['company']
         item['type'] = response.meta['Type']
         url = response.url
+        item['body_url'] = url
         if url.endswith('pdf'):
-            item['body_url'] = url
             item['seven_body'] = 'pdf format'
             item['sevenA_body'] = 'pdf format'
             yield item
         else:
-            item['body_url'] = url
-            # re Match all html tags,eg:<a></a>
-            re_h=re.compile('</?\w+[^>]*>')
-            # re Filter all html tags
-            bodys = re_h.sub(' ',response.text)
-            # re Match all html comment tags,eg:<!--123-->
-            re_comment=re.compile('<!--[^>]*-->')
-            # re Filter all html comment tags
-            body = re_comment.sub('',bodys)
-            # re Filter all illegal characters
-            s = r'(\n|\r|\xa0|/s/|\t|&nbsp;|Table of Contents|&#\d*;)'
-            content = re.sub(s,' ',body)
-            # re Match item 7 content
-            seven = re.findall('(Item 7\.[\s\S]+?)Item 7A\.',content,re.I)
-            # re Match item 7A content
-            sevenA = re.findall('(Item 7A\.[\s\S]+?)Item 8\.',content,re.I)
-            try:
-                item['seven_body'] = seven[0] if len(seven) == 1 else seven[1]
-                item['sevenA_body'] = sevenA[0] if len(sevenA) == 1 else sevenA[1]
-            except:
-                item['seven_body'] = 'scrapy type change'
-                item['sevenA_body'] = 'scrapy type change'
+            # Select all the tags that are in the body, only the first child of the <text>
+            all_selectors = response.xpath('//text/*')
+            # Select the item tags by their title
+            item_seven_head = [x.xpath('.//text()[contains(., "DISCUSSION")]') for x in all_selectors]
+            item_seven_a_head = [x.xpath('.//text()[contains(., "QUANTITATIVE AND QUALITATIVE")]') for x in all_selectors]
+            # This one represents the edge of the item_seven_a_tag
+            item_8_head = [x.xpath('.//text()[contains(., "FINANCIAL STATEMENTS")]') for x in all_selectors]
+            for i in range(len(item_seven_a_head)):
+                if len(item_seven_head[i]) != 0:
+                    item_seven_head_index = i
+                if len(item_seven_a_head[i]) != 0:
+                    item_seven_a_head_index = i
+                if len(item_8_head[i]) != 0:
+                    item_8_head_index = i
+            # Select the information we need
+            item_seven = all_selectors[item_seven_head_index:item_seven_a_head_index]
+            item_seven_a = all_selectors[item_seven_a_head_index:item_8_head_index]
+            # Remove tables from the results
+            item_seven = item_seven.xpath('./font//text()').getall()
+            item_seven_a = item_seven_a.xpath('./font//text()').getall()
+            # Remove page numbers
+            item_seven_no_ints = [element.strip() for element in item_seven
+                                  if re.match(r'^-?\d+(?:\.\d+)?$', element.strip()) is None]
+            item_seven_a_no_ints = [element.strip() for element in item_seven_a
+                                  if re.match(r'^-?\d+(?:\.\d+)?$', element.strip()) is None]
+            # Remove blank list values
+            item_seven_final = list(filter(None, item_seven_no_ints))
+            item_seven_a_final = list(filter(None, item_seven_a_no_ints))
+            # Please add items
+            item['seven_body'] = item_seven_final
+            item['sevenA_body'] = item_seven_a_final
             yield item
 #caiyi
     # def parse_year_url(self, response):
