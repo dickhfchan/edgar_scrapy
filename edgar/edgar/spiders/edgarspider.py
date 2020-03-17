@@ -32,7 +32,7 @@ class EdgarspiderSpider(scrapy.Spider):
             meta = {'clk':response.meta['clk'], 'company':response.meta['company'], 'Type':response.meta['Type']})
         if len(next_pages) > 0:
             next_p = next_pages[0].split('=',1)[1]
-            yield scrapy.Request(url=f'https://www.sec.gov{next_p}', callback=self.parse_clk_url,
+            yield scrapy.Request(url=f'https://www.sec.gov{next_p}'.replace("'",'').replace('"',''), callback=self.parse_clk_url,
                 meta = {'clk':response.meta['clk'], 'company':response.meta['company'], 'Type':response.meta['Type']})
     def parse_clk_url(self, response):
         dates = response.xpath('//table/tr/td[4]/text()').extract()[2:]
