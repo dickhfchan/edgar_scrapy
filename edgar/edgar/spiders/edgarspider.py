@@ -22,7 +22,8 @@ class EdgarspiderSpider(scrapy.Spider):
         Types = ['10-K','10-Q','20-F']
         for inx in range(len(clks)):
             for Type in Types:
-                filterurl = f'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK={clks[inx].strip()}&type={Type}&dateb=&owner=include&count=40'
+                # filterurl = f'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK={clks[inx].strip()}&type={Type}&dateb=&owner=include&count=40'
+                filterurl = f'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001058090&type=&dateb=&owner=include&count=40'
                 yield scrapy.Request(url=filterurl, callback=self.parse_clk_url,
                     meta = {'clk':clks[inx], 'company':companys[inx], 'Type':Type})
     def parse_clk_url(self, response):
