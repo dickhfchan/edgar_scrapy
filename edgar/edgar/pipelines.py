@@ -18,8 +18,8 @@ class Edgarxlsxspider(object):
                 item['clk_url'], item['ten_year_url'], item['body_url'], \
                 item['seven_body'], item['sevenA_body']]
         self.ws.append(line)
-        self.wb.save('edgar.xlsx')
-        return item
+        self.wb.save(f'{item["company"]}.xlsx')
+        return 'success'
 
 class EdgarPipeline(object):
     def __init__(self):
