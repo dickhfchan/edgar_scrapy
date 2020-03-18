@@ -109,10 +109,10 @@ class EdgarspiderSpider(scrapy.Spider):
                 if len(item_8_head[i]) != 0:
                     item_8_head_index = i
             # Select the information we need
-            # if 'item_seven_a_head_index' in locals():
-            #     item_seven = all_selectors[item_seven_head_index:item_seven_a_head_index]
-            # else:
-            item_seven = all_selectors[item_seven_head_index:item_8_head_index]
+            if 'item_seven_a_head_index' in locals():
+                item_seven = all_selectors[item_seven_head_index:item_seven_a_head_index]
+            else:
+                item_seven = all_selectors[item_seven_head_index:item_8_head_index]
             # Remove tables from the results
             item_seven = item_seven.xpath('./font//text()').getall()
             # Remove page numbers
