@@ -11,25 +11,25 @@ class ExampleSpider(scrapy.Spider):
 
     def parse(self, response):
         item = Item7Item()
-        # Select all the tags that are in the body, only the first child of the <text>
+        # Here I am selecting all the tags that have the text body, this means that I am selecting the parent tag
+        # that have all the <p> tags with texts in it. Sometimes the parent tag is not the <text>, because inside the
+        # text are two div tags, where the second is the parent tag we are looking for. If the script is not returning
+        # any values, this means that the text is not following the template that was analyzed. If this happens, please
+        # look at the document format and add an if statement to work with the specific document.
         all_selectors = response.xpath('//text/*')
+        if len(all_selectors) == 3:
+            all_selectors = response.xpath('//text/div[2]/*')
         # Select the item tags by their title
-        item_seven_head = [x.xpath('.//text()[contains(., "DISCUSSION")]') for x in all_selectors]
-        item_seven_a_head = [x.xpath('.//text()[contains(., "QUANTITATIVE AND QUALITATIVE")]') for x in all_selectors]
+        item_seven_head = [x.xpath('.//text()[contains(., "DISCUSSION AND ANALYSIS OF")]') for x in all_selectors]
         # This one represents the edge of the item_seven_a_tag
         item_8_head = [x.xpath('.//text()[contains(., "FINANCIAL STATEMENTS")]') for x in all_selectors]
-        for i in range(len(item_seven_a_head)):
+        for i in range(len(item_seven_head)):
             if len(item_seven_head[i]) != 0:
                 item_seven_head_index = i
-            if len(item_seven_a_head[i]) != 0:
-                item_seven_a_head_index = i
             if len(item_8_head[i]) != 0:
                 item_8_head_index = i
         # Select the information we need
-        if 'item_seven_a_head_index' in locals():
-            item_seven = all_selectors[item_seven_head_index:item_seven_a_head_index]
-        else:
-            item_seven = all_selectors[item_seven_head_index:item_8_head_index]
+        item_seven = all_selectors[item_seven_head_index:item_8_head_index]
         # Remove tables from the results
         item_seven = item_seven.xpath('./font//text()').getall()
         # Remove page numbers
