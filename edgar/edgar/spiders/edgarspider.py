@@ -27,7 +27,7 @@ class EdgarspiderSpider(scrapy.Spider):
         yield scrapy.Request(url=filterurl, callback=self.parse_clk_url,
             meta = {'clk':'0001058090', 'company':'Chipotle Mexican Grill', 'Type':'10-K'})
     def next_page(self, response):
-        next_pages = response.xpath('//input[@value="Next 40"]/@onclick').extract()
+        next_pages = response.xpath('//input[@value="Next 100"]/@onclick').extract()
         if len(next_pages) > 0:
             next_p = next_pages[0].split('=',1)[1]
             yield scrapy.Request(url=f'https://www.sec.gov{next_p}'.replace("'",'').replace('"',''), callback=self.next_page,
@@ -35,7 +35,7 @@ class EdgarspiderSpider(scrapy.Spider):
         yield scrapy.Request(url=response.url, callback=self.parse_clk_url,
             meta = {'clk':response.meta['clk'], 'company':response.meta['company'], 'Type':response.meta['Type']})
     def parse_clk_url(self, response):
-        next_pages = response.xpath('//input[@value="Next 40"]/@onclick').extract()
+        next_pages = response.xpath('//input[@value="Next 100"]/@onclick').extract()
         dates = response.xpath('//table/tr/td[4]/text()').extract()[2:]
         clk = response.meta['clk']
         company = response.meta['company']
@@ -109,10 +109,10 @@ class EdgarspiderSpider(scrapy.Spider):
                 if len(item_8_head[i]) != 0:
                     item_8_head_index = i
             # Select the information we need
-            if 'item_seven_a_head_index' in locals():
-                item_seven = all_selectors[item_seven_head_index:item_seven_a_head_index]
-            else:
-                item_seven = all_selectors[item_seven_head_index:item_8_head_index]
+            # if 'item_seven_a_head_index' in locals():
+            #     item_seven = all_selectors[item_seven_head_index:item_seven_a_head_index]
+            # else:
+            item_seven = all_selectors[item_seven_head_index:item_8_head_index]
             # Remove tables from the results
             item_seven = item_seven.xpath('./font//text()').getall()
             # Remove page numbers
