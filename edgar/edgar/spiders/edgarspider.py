@@ -116,7 +116,7 @@ class EdgarspiderSpider(scrapy.Spider):
             # Remove tables from the results
             item_seven = item_seven.xpath('./font//text()').getall()
             # Remove page numbers
-            item_seven_no_ints = ["".join(element.split()).replace('\xa0',' ').replace('\x92',"'").replace('\x96',"'").replace('\x97',"'") for element in item_seven
+            item_seven_no_ints = [' '.join(element.split()) for element in item_seven
                                   if re.match(r'^-?\d+(?:\.\d+)?$', element.strip()) is None]
             # Remove blank list values
             item_seven_final = list(filter(None, item_seven_no_ints))
