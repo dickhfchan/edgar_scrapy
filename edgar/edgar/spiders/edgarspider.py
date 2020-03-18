@@ -21,11 +21,11 @@ class EdgarspiderSpider(scrapy.Spider):
         companys = response.xpath('//*[@id="constituents"]/tbody/tr/td[2]/a/text()').extract()
         Types = ['10-K','10-Q','20-F']
         # for inx in range(len(clks)):
-        for Type in Types:
+        # for Type in Types:
             # filterurl = f'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK={clks[inx].strip()}&type={Type}&dateb=&owner=include&count=40'
-            filterurl = f'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001058090&type=&dateb=&owner=include&count=40'
-            yield scrapy.Request(url=filterurl, callback=self.parse_clk_url,
-                meta = {'clk':'0001058090', 'company':'Chipotle Mexican Grill', 'Type':Type})
+        filterurl = f'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001058090&type=10-k&dateb=2009&owner=include&count=100'
+        yield scrapy.Request(url=filterurl, callback=self.parse_clk_url,
+            meta = {'clk':'0001058090', 'company':'Chipotle Mexican Grill', 'Type':Type})
     def next_page(self, response):
         next_pages = response.xpath('//input[@value="Next 40"]/@onclick').extract()
         if len(next_pages) > 0:
@@ -76,7 +76,7 @@ class EdgarspiderSpider(scrapy.Spider):
         ten_year_url = response.url
         for inx in range(len(types)):
             if types[inx] == '10-K':
-                pageurl = f'https://www.sec.gov{Documents[inx]}'
+                pageurl = f'https://www.sec.gov{Documents[inx]}'.replace('/ix?doc=','')
                 yield scrapy.Request(url=pageurl, callback=self.parse_bodys,
                         meta = {'clk':clk,'Type':Type,'company':company,'clk_url':clk_url,'date':date,'ten_year_url':ten_year_url})
     def parse_bodys(self, response):
