@@ -16,7 +16,7 @@ class Edgarxlsxspider(object):
     def process_item(self, item, spider):
         line = [item['company'], item['date'], item['type'], item['clk'], \
                 item['clk_url'], item['ten_year_url'], item['body_url'], \
-                ''.join(item['seven_body']), item['sevenA_body']]
+                item['seven_body'], item['sevenA_body']]
         self.ws.append(line)
         self.wb.save('edgar.xlsx')
         return 'success'

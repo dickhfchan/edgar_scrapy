@@ -120,7 +120,7 @@ class EdgarspiderSpider(scrapy.Spider):
                                   if re.match(r'^-?\d+(?:\.\d+)?$', element.strip()) is None]
             # Remove blank list values
             item_seven_final = list(filter(None, item_seven_no_ints))
-            item['seven_body'] = item_seven_final
+            item['seven_body'] = ''.join([i.encode('utf-8') for i in item_seven_final])
             item['sevenA_body'] = 'test'
             yield item
 #caiyi
