@@ -120,7 +120,7 @@ class EdgarspiderSpider(scrapy.Spider):
                                   if re.match(r'^-?\d+(?:\.\d+)?$', element.strip()) is None]
             # Remove blank list values
             item_seven_final = list(filter(None, item_seven_no_ints))
-            item['item_seven'] = item_seven_final
+            item['seven_body'] = item_seven_final
             yield item
 #caiyi
     # def parse_year_url(self, response):
