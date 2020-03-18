@@ -25,7 +25,7 @@ class EdgarspiderSpider(scrapy.Spider):
             # filterurl = f'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK={clks[inx].strip()}&type={Type}&dateb=&owner=include&count=40'
         filterurl = f'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001058090&type=10-k&dateb=2009&owner=include&count=100'
         yield scrapy.Request(url=filterurl, callback=self.parse_clk_url,
-            meta = {'clk':'0001058090', 'company':'Chipotle Mexican Grill', 'Type':Type})
+            meta = {'clk':'0001058090', 'company':'Chipotle Mexican Grill', 'Type':'10-K'})
     def next_page(self, response):
         next_pages = response.xpath('//input[@value="Next 40"]/@onclick').extract()
         if len(next_pages) > 0:
