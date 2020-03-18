@@ -35,6 +35,7 @@ class EdgarspiderSpider(scrapy.Spider):
         yield scrapy.Request(url=response.url, callback=self.parse_clk_url,
             meta = {'clk':response.meta['clk'], 'company':response.meta['company'], 'Type':response.meta['Type']})
     def parse_clk_url(self, response):
+        next_pages = response.xpath('//input[@value="Next 40"]/@onclick').extract()
         dates = response.xpath('//table/tr/td[4]/text()').extract()[2:]
         clk = response.meta['clk']
         company = response.meta['company']
@@ -48,11 +49,10 @@ class EdgarspiderSpider(scrapy.Spider):
                 documents = f'https://www.sec.gov{document_urls[inx]}'.replace('/ix?doc=','')
                 yield scrapy.Request(url=documents, callback=self.parse_year_url,
                         meta = {'clk':clk,'Type':Type,'company':company,'clk_url':clk_url,'date':dates[inx]})
-        next_pages = response.xpath('//input[@value="Next 40"]/@onclick').extract()
-        if len(next_pages) > 0:
-            next_p = next_pages[0].split('=',1)[1]
-            yield scrapy.Request(url=f'https://www.sec.gov{next_p}'.replace("'",'').replace('"',''), callback=self.parse_clk_url,
-                meta = {'clk':response.meta['clk'], 'company':response.meta['company'], 'Type':response.meta['Type']})
+        # if len(next_pages) > 0:
+        #     next_p = next_pages[0].split('=',1)[1]
+        #     yield scrapy.Request(url=f'https://www.sec.gov{next_p}'.replace("'",'').replace('"',''), callback=self.parse_clk_url,
+        #         meta = {'clk':response.meta['clk'], 'company':response.meta['company'], 'Type':response.meta['Type']})
         else:
             item = EdgarItem()
             item['clk'] = clk
@@ -109,22 +109,18 @@ class EdgarspiderSpider(scrapy.Spider):
                 if len(item_8_head[i]) != 0:
                     item_8_head_index = i
             # Select the information we need
-            item_seven = all_selectors[item_seven_head_index:item_seven_a_head_index]
-            item_seven_a = all_selectors[item_seven_a_head_index:item_8_head_index]
+            if 'item_seven_a_head_index' in locals():
+                item_seven = all_selectors[item_seven_head_index:item_seven_a_head_index]
+            else:
+                item_seven = all_selectors[item_seven_head_index:item_8_head_index]
             # Remove tables from the results
             item_seven = item_seven.xpath('./font//text()').getall()
-            item_seven_a = item_seven_a.xpath('./font//text()').getall()
             # Remove page numbers
             item_seven_no_ints = [element.strip() for element in item_seven
                                   if re.match(r'^-?\d+(?:\.\d+)?$', element.strip()) is None]
-            item_seven_a_no_ints = [element.strip() for element in item_seven_a
-                                  if re.match(r'^-?\d+(?:\.\d+)?$', element.strip()) is None]
             # Remove blank list values
             item_seven_final = list(filter(None, item_seven_no_ints))
-            item_seven_a_final = list(filter(None, item_seven_a_no_ints))
-            # Please add items
-            item['seven_body'] = item_seven_final
-            item['sevenA_body'] = item_seven_a_final
+            item['item_seven'] = item_seven_final
             yield item
 #caiyi
     # def parse_year_url(self, response):
