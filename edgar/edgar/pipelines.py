@@ -21,7 +21,7 @@ class Edgarxlsxspider(object):
             self.ws.append(info)
         # self.ws.append(line)
         self.wb.save('edgar.xlsx')
-        return 'success'
+        return item
 
 class EdgarPipeline(object):
     def __init__(self):
