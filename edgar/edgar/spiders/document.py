@@ -7,31 +7,31 @@ from item7.items import Item7Item
 
 class ExampleSpider(scrapy.Spider):
     name = 'example'
-    start_urls = [r"file:///C:\Users\Pichau\Downloads\form10k.html"]
+
+    def start_requests(self):
+        urls = ['https://www.sec.gov/Archives/edgar/data/1058090/000119312514035451/d629534d10k.htm',
+                  'https://www.sec.gov/Archives/edgar/data/1058090/000119312513046377/d445653d10k.htm',
+                  'https://www.sec.gov/Archives/edgar/data/1058090/000119312515033771/d861905d10k.htm',
+                  'https://www.sec.gov/Archives/edgar/data/1058090/000105809016000058/cmg-20151231x10k.htm',
+                  'https://www.sec.gov/Archives/edgar/data/1058090/000119312510035029/d10k.htm',
+                  'https://www.sec.gov/Archives/edgar/data/1058090/000105809017000009/cmg-20161231x10k.htm',
+                  'https://www.sec.gov/Archives/edgar/data/1058090/000119312512052969/d280751d10k.htm',
+                  'https://www.sec.gov/Archives/edgar/data/1058090/000105809020000010/cmg-20191231x10k.htm',
+                  'https://www.sec.gov/Archives/edgar/data/1058090/000105809019000007/cmg-20181231x10k.htm',
+                  'https://www.sec.gov/Archives/edgar/data/1058090/000105809018000018/cmg-20171231x10k.htm',
+                  'https://www.sec.gov/Archives/edgar/data/1058090/000119312511039010/d10k.htm'
+]
+        for url in urls:
+            yield scrapy.Request(url, callback=self.parse, encoding='utf-8-sig')
 
     def parse(self, response):
         item = Item7Item()
-        # Here I am selecting all the tags that have the text body, this means that I am selecting the parent tag
-        # that have all the <p> tags with texts in it. Sometimes the parent tag is not the <text>, because inside the
-        # text are two div tags, where the second is the parent tag we are looking for. If the script is not returning
-        # any values, this means that the text is not following the template that was analyzed. If this happens, please
-        # look at the document format and add an if statement to work with the specific document.
-        all_selectors = response.xpath('//text/*')
-        if len(all_selectors) == 3:
-            all_selectors = response.xpath('//text/div[2]/*')
-        # Select the item tags by their title
-        item_seven_head = [x.xpath('.//text()[contains(., "DISCUSSION AND ANALYSIS OF")]') for x in all_selectors]
-        # This one represents the edge of the item_seven_a_tag
-        item_8_head = [x.xpath('.//text()[contains(., "FINANCIAL STATEMENTS")]') for x in all_selectors]
-        for i in range(len(item_seven_head)):
-            if len(item_seven_head[i]) != 0:
-                item_seven_head_index = i
-            if len(item_8_head[i]) != 0:
-                item_8_head_index = i
-        # Select the information we need
-        item_seven = all_selectors[item_seven_head_index:item_8_head_index]
-        # Remove tables from the results
-        item_seven = item_seven.xpath('./font//text()').getall()
+        n1 = 'text()[contains(., "DISCUSSION AND ANALYSIS OF")]'
+        n2 = 'text()[contains(., "FINANCIAL STATEMENTS AND SUPPLEMENTARY DATA ")]'
+        # I am selecting all the nodes before node 2 and all the nodes from node 1 and removing the nodes of node 1
+        # from node 2. This way I am selecting all the information between items 7 and 8
+        item_seven = response.xpath(f'set:difference(/*/*//{n2}/preceding::p, /*/*//{n1}/preceding::p)'
+                                    f'/*[not(ancestor::td)]//text()').getall()
         # Remove page numbers
         item_seven_no_ints = [element.strip() for element in item_seven
                               if re.match(r'^-?\d+(?:\.\d+)?$', element.strip()) is None]
