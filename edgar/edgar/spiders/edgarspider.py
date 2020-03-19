@@ -98,9 +98,6 @@ class EdgarspiderSpider(scrapy.Spider):
             all_selectors = response.xpath('//text/*')
             if len(all_selectors) == 3:
                 all_selectors = response.xpath('//text/div[2]/*')
-            if len(all_selectors) == 0:
-                item['seven_body'] = 'html error'
-                item['sevenA_body'] = 'test'
             # Select the item tags by their title
             item_seven_head = [x.xpath('.//text()[contains(., "DISCUSSION")]') for x in all_selectors]
             item_seven_a_head = [x.xpath('.//text()[contains(., "QUANTITATIVE AND QUALITATIVE")]') for x in all_selectors]
@@ -116,6 +113,10 @@ class EdgarspiderSpider(scrapy.Spider):
             # Select the information we need
             if 'item_seven_a_head_index' in locals():
                 item_seven = all_selectors[item_seven_head_index:item_seven_a_head_index]
+            if len(all_selectors) == 0:
+                item['seven_body'] = 'html error'
+                item['sevenA_body'] = 'test'
+                yield item
             else:
                 item_seven = all_selectors[item_seven_head_index:item_8_head_index]
             # Remove tables from the results
@@ -126,7 +127,7 @@ class EdgarspiderSpider(scrapy.Spider):
                                   if re.match(r'^-?\d+(?:\.\d+)?$', element.strip()) is None]
             # Remove blank list values
             item_seven_final = list(filter(None, item_seven_no_ints))
-            item['seven_body'] = item_seven_final
+            item['seven_body'] = ''.join(item_seven_final)
             item['sevenA_body'] = 'test'
             yield item
 #caiyi
