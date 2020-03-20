@@ -20,12 +20,12 @@ class EdgarspiderSpider(scrapy.Spider):
         clks = response.xpath('//*[@id="constituents"]/tbody/tr/td[8]/text()').extract()
         companys = response.xpath('//*[@id="constituents"]/tbody/tr/td[2]/a/text()').extract()
         Types = ['10-K','10-Q','20-F']
-        # for inx in range(len(clks)):
+        for inx in range(len(clks)):
         # for Type in Types:
             # filterurl = f'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK={clks[inx].strip()}&type={Type}&dateb=&owner=include&count=40'
-        filterurl = f'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001058090&type=10-k&dateb=2009&owner=include&count=100'
-        yield scrapy.Request(url=filterurl, callback=self.parse_clk_url,
-            meta = {'clk':'0001058090', 'company':'Chipotle Mexican Grill', 'Type':'10-K'})
+            filterurl = f'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK={clks[inx]}&type=10-k&dateb=2009&owner=include&count=100'
+            yield scrapy.Request(url=filterurl, callback=self.parse_clk_url,
+                meta = {'clk':clks[inx], 'company':companys[inx], 'Type':'10-K'})
     def next_page(self, response):
         next_pages = response.xpath('//input[@value="Next 100"]/@onclick').extract()
         if len(next_pages) > 0:
@@ -49,22 +49,10 @@ class EdgarspiderSpider(scrapy.Spider):
                 documents = f'https://www.sec.gov{document_urls[inx]}'.replace('/ix?doc=','')
                 yield scrapy.Request(url=documents, callback=self.parse_year_url,
                         meta = {'clk':clk,'Type':Type,'company':company,'clk_url':clk_url,'date':dates[inx]})
-        # if len(next_pages) > 0:
-        #     next_p = next_pages[0].split('=',1)[1]
-        #     yield scrapy.Request(url=f'https://www.sec.gov{next_p}'.replace("'",'').replace('"',''), callback=self.parse_clk_url,
-        #         meta = {'clk':response.meta['clk'], 'company':response.meta['company'], 'Type':response.meta['Type']})
-        else:
-            item = EdgarItem()
-            item['clk'] = clk
-            item['clk_url'] = clk_url
-            item['company'] = company
-            item['date'] = 'Non'
-            item['ten_year_url'] = 'Non'
-            item['body_url'] = 'Non'
-            item['seven_body'] = 'Non'
-            item['sevenA_body'] = 'Non'
-            item['type'] = Type
-            yield item
+        if len(next_pages) > 0:
+            next_p = next_pages[0].split('=',1)[1]
+            yield scrapy.Request(url=f'https://www.sec.gov{next_p}'.replace("'",'').replace('"',''), callback=self.parse_clk_url,
+                meta = {'clk':response.meta['clk'], 'company':response.meta['company'], 'Type':response.meta['Type']})
     def parse_year_url(self, response):
         types = response.xpath('//table/tr/td[4]/text()').extract()
         Documents = response.xpath('//table/tr/td[3]/a/@href').extract()
@@ -91,7 +79,6 @@ class EdgarspiderSpider(scrapy.Spider):
         item['body_url'] = url
         if url.endswith('pdf'):
             item['seven_body'] = 'pdf format'
-            item['sevenA_body'] = 'pdf format'
             yield item
         else:
             n1 = 'text()[contains(., "DISCUSSION AND ANALYSIS OF")]'
@@ -102,12 +89,11 @@ class EdgarspiderSpider(scrapy.Spider):
                                         f'/*[not(ancestor::td)]//text()').getall()
             # Remove page numbers
             c = str.maketrans("\x92-\x94-\x93-\x96-\x97", '" " " " "')
-            item_seven_no_ints = [' '.join(element.split()).translate(c) for element in item_seven
+            item_seven_no_ints = [' '.join(element.split()).translate(c).replace('Table of Contents','') for element in item_seven
                                   if re.match(r'^-?\d+(?:\.\d+)?$', element.strip()) is None]
             # Remove blank list values
             item_seven_final = list(filter(None, item_seven_no_ints))
             item['seven_body'] = ''.join(item_seven_final)
-            item['sevenA_body'] = 'test'
             yield item
 #caiyi
     # def parse_year_url(self, response):

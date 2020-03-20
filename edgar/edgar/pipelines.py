@@ -11,12 +11,12 @@ from openpyxl import Workbook
 class Edgarxlsxspider(object):
     wb = Workbook()
     ws = wb.active
-    ws.append(['company','date','type','clk','clk_url','ten_year_url','body_url','seven_body','sevenA_body'])
+    ws.append(['company','date','type','clk','clk_url','ten_year_url','body_url','seven_body'])
 
     def process_item(self, item, spider):
         line = [item['company'], item['date'], item['type'], item['clk'], \
                 item['clk_url'], item['ten_year_url'], item['body_url'], \
-                item['seven_body'], item['sevenA_body']]
+                item['seven_body']]
         # for info in line:
         #     self.ws.append(info)
         self.ws.append(line)
