@@ -17,9 +17,9 @@ class Edgarxlsxspider(object):
         line = [item['company'], item['date'], item['type'], item['clk'], \
                 item['clk_url'], item['ten_year_url'], item['body_url'], \
                 item['seven_body'], item['sevenA_body']]
-        for info in line:
-            self.ws.append(info)
-        # self.ws.append(line)
+        # for info in line:
+        #     self.ws.append(info)
+        self.ws.append(line)
         self.wb.save('edgar.xlsx')
         return item
 

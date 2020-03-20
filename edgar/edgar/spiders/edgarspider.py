@@ -77,7 +77,7 @@ class EdgarspiderSpider(scrapy.Spider):
         for inx in range(len(types)):
             if types[inx] == '10-K':
                 pageurl = f'https://www.sec.gov{Documents[inx]}'.replace('/ix?doc=','')
-                yield scrapy.Request(url=pageurl, callback=self.parse_bodys,
+                yield scrapy.Request(url=pageurl, callback=self.parse_bodys, encoding='utf-8-sig'
                         meta = {'clk':clk,'Type':Type,'company':company,'clk_url':clk_url,'date':date,'ten_year_url':ten_year_url})
     def parse_bodys(self, response):
         item = EdgarItem()
@@ -94,33 +94,12 @@ class EdgarspiderSpider(scrapy.Spider):
             item['sevenA_body'] = 'pdf format'
             yield item
         else:
-            # Select all the tags that are in the body, only the first child of the <text>
-            all_selectors = response.xpath('//text/*')
-            if len(all_selectors) == 3:
-                all_selectors = response.xpath('//text/div[2]/*')
-            # Select the item tags by their title
-            item_seven_head = [x.xpath('.//text()[contains(., "DISCUSSION")]') for x in all_selectors]
-            item_seven_a_head = [x.xpath('.//text()[contains(., "QUANTITATIVE AND QUALITATIVE")]') for x in all_selectors]
-            # This one represents the edge of the item_seven_a_tag
-            item_8_head = [x.xpath('.//text()[contains(., "FINANCIAL STATEMENTS")]') for x in all_selectors]
-            for i in range(len(item_seven_a_head)):
-                if len(item_seven_head[i]) != 0:
-                    item_seven_head_index = i
-                if len(item_seven_a_head[i]) != 0:
-                    item_seven_a_head_index = i
-                if len(item_8_head[i]) != 0:
-                    item_8_head_index = i
-            # Select the information we need
-            if 'item_seven_a_head_index' in locals():
-                item_seven = all_selectors[item_seven_head_index:item_seven_a_head_index]
-            if len(all_selectors) == 0:
-                item['seven_body'] = 'html error'
-                item['sevenA_body'] = 'test'
-                yield item
-            else:
-                item_seven = all_selectors[item_seven_head_index:item_8_head_index]
-            # Remove tables from the results
-            item_seven = item_seven.xpath('./font//text()').getall()
+            n1 = 'text()[contains(., "DISCUSSION AND ANALYSIS OF")]'
+            n2 = 'text()[contains(., "FINANCIAL STATEMENTS AND SUPPLEMENTARY DATA ")]'
+            # I am selecting all the nodes before node 2 and all the nodes from node 1 and removing the nodes of node 1
+            # from node 2. This way I am selecting all the information between items 7 and 8
+            item_seven = response.xpath(f'set:difference(/*/*//{n2}/preceding::p, /*/*//{n1}/preceding::p)'
+                                        f'/*[not(ancestor::td)]//text()').getall()
             # Remove page numbers
             c = str.maketrans("\x92-\x94-\x93-\x96-\x97", '" " " " "')
             item_seven_no_ints = [' '.join(element.split()).translate(c) for element in item_seven
