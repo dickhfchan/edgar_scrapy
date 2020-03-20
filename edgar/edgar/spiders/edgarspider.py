@@ -77,7 +77,7 @@ class EdgarspiderSpider(scrapy.Spider):
         for inx in range(len(types)):
             if types[inx] == '10-K':
                 pageurl = f'https://www.sec.gov{Documents[inx]}'.replace('/ix?doc=','')
-                yield scrapy.Request(url=pageurl, callback=self.parse_bodys, encoding='utf-8-sig'
+                yield scrapy.Request(url=pageurl, callback=self.parse_bodys, encoding='utf-8-sig',
                         meta = {'clk':clk,'Type':Type,'company':company,'clk_url':clk_url,'date':date,'ten_year_url':ten_year_url})
     def parse_bodys(self, response):
         item = EdgarItem()
