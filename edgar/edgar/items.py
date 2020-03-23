@@ -29,5 +29,6 @@ class Hangseng(scrapy.Item):
 
 
 class DocumentItem(scrapy.Item):
+    url = scrapy.Field()
     item_seven = scrapy.Field()
     is_item_seven = scrapy.Field()
