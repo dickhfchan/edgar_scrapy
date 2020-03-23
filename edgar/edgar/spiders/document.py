@@ -45,4 +45,5 @@ class ExampleSpider(scrapy.Spider):
         is_item_seven =  1 if len(item_seven_final) < 1500 else 0
         item['item_seven'] = item_seven_final
         item['is_item_seven'] = is_item_seven
+        item['url'] = response.url
         yield item
