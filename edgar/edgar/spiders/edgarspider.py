@@ -81,12 +81,22 @@ class EdgarspiderSpider(scrapy.Spider):
             item['seven_body'] = 'pdf format'
             yield item
         else:
-            n1 = 'text()[contains(., "DISCUSSION AND ANALYSIS OF")]'
-            n2 = 'text()[contains(., "FINANCIAL STATEMENTS AND SUPPLEMENTARY DATA ")]'
-            # I am selecting all the nodes before node 2 and all the nodes from node 1 and removing the nodes of node 1
-            # from node 2. This way I am selecting all the information between items 7 and 8
-            item_seven = response.xpath(f'set:difference(/*/*//{n2}/preceding::p, /*/*//{n1}/preceding::p)'
-                                        f'/*[not(ancestor::td)]//text()').getall()
+            item_7_possible_titles = ['DISCUSSION AND ANALYSIS OF']
+            item_8_possible_titles = ['FINANCIAL STATEMENTS AND SUPPLEMENTARY DATA', 'CONSOLIDATED FINANCIAL STATEMENTS']
+            for item_seven_title in item_7_possible_titles:
+                for item_8_title in item_8_possible_titles:
+                    item_seven_xpath = f'text()[contains(., "{item_seven_title}")]'
+                    item_8_xpath = f'text()[contains(., "{item_8_title}")]'
+                    # I am selecting all the nodes before node 2 and all the nodes from node 1
+                    # and removing the nodes of node 1
+                    # from node 2. This way I am selecting all the information between items 7 and 8
+                    item_seven = response.xpath(f'set:difference(/*/*//{item_8_xpath}/preceding::'
+                                                f'*, /*/*//{item_seven_xpath}/preceding::*)'
+                                                f'/*[not(ancestor::td)]//text()').getall()
+                    if item_seven:
+                        break
+                if item_seven:
+                    break
             # Remove page numbers
             c = str.maketrans("\x92-\x94-\x93-\x96-\x97", '" " " " "')
             item_seven_no_ints = [' '.join(element.split()).translate(c).replace('Table of Contents','') for element in item_seven
