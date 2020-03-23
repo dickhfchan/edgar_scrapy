@@ -30,4 +30,4 @@ class Hangseng(scrapy.Item):
 
 class DocumentItem(scrapy.Item):
     item_seven = scrapy.Field()
-    item_sevena = scrapy.Field()
+    is_item_seven = scrapy.Field()
