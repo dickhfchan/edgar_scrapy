@@ -42,5 +42,7 @@ class ExampleSpider(scrapy.Spider):
         file_name = response.url.split('/')[-1].split('.')[0]
         # with open(f'text_files/{file_name}.txt', 'w') as f:
         #     f.write(r'\n'.join(item_seven_final))
+        is_item_seven =  1 if len(item_seven_final) < 1500 else 0
         item['item_seven'] = item_seven_final
+        item['is_item_seven'] = is_item_seven
         yield item
