@@ -17,8 +17,9 @@ class ExampleSpider(scrapy.Spider):
 
     def parse(self, response):
         item = Item7Item()
-        item_7_possible_titles = ['DISCUSSION AND ANALYSIS OF']
-        item_8_possible_titles = ['FINANCIAL STATEMENTS AND SUPPLEMENTARY DATA', 'CONSOLIDATED FINANCIAL STATEMENTS']
+        item_7_possible_titles = ['DISCUSSION AND ANALYSIS OF', 'Discussion and Analysis of Financial']
+        item_8_possible_titles = ['FINANCIAL STATEMENTS AND SUPPLEMENTARY DATA', 'CONSOLIDATED FINANCIAL STATEMENTS',
+                                  'Financial Statements and Supplementary Data', 'Consolidated Financial Statements']
         for item_seven_title in item_7_possible_titles:
             for item_8_title in item_8_possible_titles:
                 item_seven_xpath = f'text()[contains(., "{item_seven_title}")]'
@@ -28,7 +29,7 @@ class ExampleSpider(scrapy.Spider):
                 # from node 2. This way I am selecting all the information between items 7 and 8
                 item_seven = response.xpath(f'set:difference(/*/*//{item_8_xpath}/preceding::'
                                             f'*, /*/*//{item_seven_xpath}/preceding::*)'
-                                            f'/*[not(ancestor::td)]//text()').getall()
+                                            f'/*[not(ancestor-or-self::table)]//text()').getall()
                 if item_seven:
                     break
             if item_seven:
