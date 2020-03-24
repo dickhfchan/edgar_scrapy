@@ -11,7 +11,7 @@ from openpyxl import Workbook
 class Edgarxlsxspider(object):
     wb = Workbook()
     ws = wb.active
-    ws.append(['company','date','type','clk','clk_url','ten_year_url','body_url','seven_body',is_item_seven])
+    ws.append(['company','date','type','clk','clk_url','ten_year_url','body_url','seven_body','is_item_seven'])
 
     def process_item(self, item, spider):
         line = [item['company'], item['date'], item['type'], item['clk'], \
