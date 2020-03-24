@@ -81,8 +81,9 @@ class EdgarspiderSpider(scrapy.Spider):
             item['seven_body'] = 'pdf format'
             yield item
         else:
-            item_7_possible_titles = ['DISCUSSION AND ANALYSIS OF']
-            item_8_possible_titles = ['FINANCIAL STATEMENTS AND SUPPLEMENTARY DATA', 'CONSOLIDATED FINANCIAL STATEMENTS']
+            item_7_possible_titles = ['DISCUSSION AND ANALYSIS OF', 'Discussion and Analysis of Financial']
+            item_8_possible_titles = ['FINANCIAL STATEMENTS AND SUPPLEMENTARY DATA', 'CONSOLIDATED FINANCIAL STATEMENTS',
+                                      'Financial Statements and Supplementary Data', 'Consolidated Financial Statements']
             for item_seven_title in item_7_possible_titles:
                 for item_8_title in item_8_possible_titles:
                     item_seven_xpath = f'text()[contains(., "{item_seven_title}")]'
@@ -92,7 +93,7 @@ class EdgarspiderSpider(scrapy.Spider):
                     # from node 2. This way I am selecting all the information between items 7 and 8
                     item_seven = response.xpath(f'set:difference(/*/*//{item_8_xpath}/preceding::'
                                                 f'*, /*/*//{item_seven_xpath}/preceding::*)'
-                                                f'/*[not(ancestor::td)]//text()').getall()
+                                                f'/*[not(ancestor-or-self::table)]//text()').getall()
                     if item_seven:
                         break
                 if item_seven:
@@ -103,7 +104,12 @@ class EdgarspiderSpider(scrapy.Spider):
                                   if re.match(r'^-?\d+(?:\.\d+)?$', element.strip()) is None]
             # Remove blank list values
             item_seven_final = list(filter(None, item_seven_no_ints))
+            file_name = response.url.split('/')[-1].split('.')[0]
+            # with open(f'text_files/{file_name}.txt', 'w') as f:
+            #     f.write(r'\n'.join(item_seven_final))
+            is_item_seven =  1 if len(item_seven_final) < 1500 else 0
             item['seven_body'] = ''.join(item_seven_final)
+            item['is_item_seven'] = is_item_seven
             yield item
 #caiyi
     # def parse_year_url(self, response):

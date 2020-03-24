@@ -19,6 +19,7 @@ class EdgarItem(scrapy.Item):
     date = scrapy.Field()
     type = scrapy.Field()
     body = scrapy.Field()
+    is_item_seven = scrapy.Field()
 
 class Hangseng(scrapy.Item):
     code = scrapy.Field()
