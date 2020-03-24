@@ -23,6 +23,20 @@ class Edgarxlsxspider(object):
         self.wb.save('edgar.xlsx')
         return item
 
+class EdgarcsvPipeline(object):
+    def open_spider(self, spider):
+        self.file = open('edgar.csv', 'wb')
+        self.exporter = CsvItemExporter(self.file, delimiter='~')
+        self.exporter.start_exporting()
+
+    def close_spider(self, spider):
+        self.exporter.finish_exporting()
+        self.file.close()
+
+    def process_item(self, item, spider):
+        self.exporter.export_item(item)
+        return item
+
 class EdgarPipeline(object):
     def __init__(self):
         self.server = ['13.229.248.211']
