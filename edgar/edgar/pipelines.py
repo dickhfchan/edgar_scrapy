@@ -44,9 +44,9 @@ class EdgarPipeline(object):
         self.session = self.cluster.connect('scrapy')
 
     def process_item(self, item, spider):
-        self.session.execute("""insert into edgar_seven (company,date,type,clk,clk_url,ten_year_url,body_url,seven_body,sevenA_body)values(%s ,%s ,%s, %s, %s ,%s ,%s, %s, %s)""",
+        self.session.execute("""insert into edgar_seven (company,date,type,clk,clk_url,ten_year_url,body_url,seven_body,is_item_seven)values(%s ,%s ,%s, %s, %s ,%s ,%s, %s, %s)""",
                         (str(item['company']),str(item['date']),str(item['type']),str(item['clk']), str(item['clk_url']),str(item['ten_year_url']),
-                         str(item['body_url']),str(item['seven_body']),str(item['sevenA_body'])))
+                         str(item['body_url']),str(item['seven_body']),str(item['is_item_seven'])))
         return item
 
 class EdgarfetchPipeline(object):
