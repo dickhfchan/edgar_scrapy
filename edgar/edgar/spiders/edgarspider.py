@@ -77,8 +77,9 @@ class EdgarspiderSpider(scrapy.Spider):
         item['type'] = response.meta['Type']
         url = response.url
         item['body_url'] = url
-        if url.endswith('pdf'):
+        if '.pdf' in url:
             item['seven_body'] = 'pdf format'
+            item['is_item_seven'] = 'pdf format'
             yield item
         else:
             item_7_possible_titles = ['DISCUSSION AND ANALYSIS OF', 'Discussion and Analysis of Financial']
