@@ -11,6 +11,7 @@ from item7.items import Item7Item
 class ExampleSpider(scrapy.Spider):
     name = 'example'
 
+    # I am using the w3lib to remove escape chars, html5 whitespace and removing html entities
     def clean_html(self, text) -> str:
         # body_without_tables = w3lib.html.remove_tags_with_content(text, which_ones=('table',))
         body_without_escape_chars = w3lib.html.replace_escape_chars(text)
@@ -27,15 +28,18 @@ class ExampleSpider(scrapy.Spider):
         item = Item7Item()
         item_seven = []
         cleaned_body = self.clean_html(response.body)
-        # Removing the start of the document
+        # Removing the start of the document so we won't find the item 7 in the index
         start_of_document_index = int(len(cleaned_body)/20)
         cleaned_body = cleaned_body[start_of_document_index:]
+        # Replacing cleaned response's body to use the xpath in it
         response = response.replace(body=cleaned_body)
+        # Looking for possible titles of the item 7 and item 8
         item_7_possible_titles = ['Item 7.', 'ITEM 7.', 'DISCUSSION AND ANALYSIS OF',
                                   'Discussion and Analysis of Financial']
         item_8_possible_titles = ['Item 8.', 'ITEM 8.', 'FINANCIAL STATEMENTS AND SUPPLEMENTARY DATA',
                                   'CONSOLIDATED FINANCIAL STATEMENTS',
                                   'Financial Statements and Supplementary Data', 'Consolidated Financial Statements']
+        # Looping all possibble title combinations to find the correct one. All wrong combinations are discarted
         for item_seven_title in item_7_possible_titles:
             for item_8_title in item_8_possible_titles:
                 item_seven_xpath = f'text()[contains(., "{item_seven_title}")]'
