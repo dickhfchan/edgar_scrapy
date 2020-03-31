@@ -8,20 +8,20 @@ from scrapy.exporters import CsvItemExporter
 from cassandra.cluster import Cluster
 from openpyxl import Workbook
 
-# class Edgarxlsxspider(object):
-#     wb = Workbook()
-#     ws = wb.active
-#     ws.append(['company','date','type','clk','clk_url','ten_year_url','body_url','seven_body','is_item_seven'])
-#
-#     def process_item(self, item, spider):
-#         line = [item['company'], item['date'], item['type'], item['clk'], \
-#                 item['clk_url'], item['ten_year_url'], item['body_url'], \
-#                 item['seven_body'],item['is_item_seven']]
-#         # for info in line:
-#         #     self.ws.append(info)
-#         self.ws.append(line)
-#         self.wb.save('edgar.xlsx')
-#         return item
+class Edgarxlsxspider(object):
+    wb = Workbook()
+    ws = wb.active
+    ws.append(['company','date','type','clk','clk_url','ten_year_url','body_url','seven_body','is_item_seven'])
+
+    def process_item(self, item, spider):
+        line = [item['company'], item['date'], item['type'], item['clk'], \
+                item['clk_url'], item['ten_year_url'], item['body_url'], \
+                item['seven_body'],item['is_item_seven']]
+        # for info in line:
+        #     self.ws.append(info)
+        self.ws.append(line)
+        self.wb.save('edgar.xlsx')
+        return item
 
 class EdgarcsvPipeline(object):
     def open_spider(self, spider):

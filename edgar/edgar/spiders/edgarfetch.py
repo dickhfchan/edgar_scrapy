@@ -9,11 +9,11 @@ class EdgarfetchSpider(scrapy.Spider):
     name = 'edgarfetch'
     # allowed_domains = ['https://en.wikipedia.org/']
     start_urls = ['https://en.wikipedia.org/wiki/List_of_S%26P_500_companies']
-    custom_settings = {
-        'ITEM_PIPELINES': {
-                'edgar.pipelines.EdgarfetchPipeline': 400
-                }
-        }
+    # custom_settings = {
+    #     'ITEM_PIPELINES': {
+    #             'edgar.pipelines.EdgarfetchPipeline': 400
+    #             }
+    #     }
 
     def parse(self, response):
         clks = response.xpath('//*[@id="constituents"]/tbody/tr/td[8]/text()').extract()
