@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import scrapy
+import w3lib.html
 import re
 from edgar.items import EdgarItem
 from scrapy.shell import inspect_response
@@ -14,6 +15,13 @@ class EdgarspiderSpider(scrapy.Spider):
                 'edgar.pipelines.Edgarxlsxspider': 400
                 }
         }
+
+    def clean_html(self, text) -> str:
+        # body_without_tables = w3lib.html.remove_tags_with_content(text, which_ones=('table',))
+        body_without_escape_chars = w3lib.html.replace_escape_chars(text)
+        cleaned_body = w3lib.html.strip_html5_whitespace(body_without_escape_chars)
+        replaced_entities = w3lib.html.replace_entities(cleaned_body)
+        return replaced_entities
 
     def parse(self, response):
         # get clks datas
