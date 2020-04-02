@@ -18,9 +18,9 @@ class EdgarspiderSpider(scrapy.Spider):
 
     def clean_html(self, text) -> str:
         # body_without_tables = w3lib.html.remove_tags_with_content(text, which_ones=('table',))
-        body_without_escape_chars = w3lib.html.replace_escape_chars(text)
-        cleaned_body = w3lib.html.strip_html5_whitespace(body_without_escape_chars)
-        replaced_entities = w3lib.html.replace_entities(cleaned_body)
+        # body_without_escape_chars = w3lib.html.replace_escape_chars(text)
+        # cleaned_body = w3lib.html.strip_html5_whitespace(body_without_escape_chars)
+        replaced_entities = w3lib.html.replace_entities(text)
         return replaced_entities
 
     def parse(self, response):
@@ -101,8 +101,9 @@ class EdgarspiderSpider(scrapy.Spider):
             item_7_possible_titles = ['Item 7.', 'ITEM 7.', 'DISCUSSION AND ANALYSIS OF',
                                       'Discussion and Analysis of Financial']
             item_8_possible_titles = ['Item 8.', 'ITEM 8.', 'FINANCIAL STATEMENTS AND SUPPLEMENTARY DATA',
-                                      'CONSOLIDATED FINANCIAL STATEMENTS',
-                                      'Financial Statements and Supplementary Data', 'Consolidated Financial Statements']
+                                      'Financial Statements and Supplementary Data', 'Statements and Supplementary',
+                                      'Consolidated Financial Statements',
+                                      'CONSOLIDATED FINANCIAL STATEMENTS']
             # Looping all possibble title combinations to find the correct one. All wrong combinations are discarted
             for item_seven_title in item_7_possible_titles:
                 for item_8_title in item_8_possible_titles:
@@ -115,7 +116,7 @@ class EdgarspiderSpider(scrapy.Spider):
                     # from node 2. This way I am selecting all the information between items 7 and 8
                     if response.xpath(item_seven_xpath_to_diff) and response.xpath(item_8_xpath_to_diff):
                         item_xpath = f'set:difference({item_8_xpath_to_diff}, {item_seven_xpath_to_diff})' \
-                                     f'/*[not(ancestor-or-self::table)]//text()'
+                                     f'/*//text()[not(ancestor-or-self::table)]'
                         item_seven = response.xpath(item_xpath).getall()
                     if item_seven:
                         break
@@ -127,7 +128,7 @@ class EdgarspiderSpider(scrapy.Spider):
                                   if re.match(r'^-?\d+(?:\.\d+)?$', element.strip()) is None]
             # Remove blank list values
             item_seven_final = list(filter(None, item_seven_no_ints))
-            file_name = response.url.split('/')[-1].split('.')[0]
+            # file_name = response.url.split('/')[-1].split('.')[0]
             # with open(f'text_files/{file_name}.txt', 'w') as f:
             #     f.write(r'\n'.join(item_seven_final))
             is_item_seven = 1 if len(item_seven_final) < 1500 else 0
