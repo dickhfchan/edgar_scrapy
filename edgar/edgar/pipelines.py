@@ -20,7 +20,7 @@ class Edgarxlsxspider(object):
         # for info in line:
         #     self.ws.append(info)
         self.ws.append(line)
-        self.wb.save('edgar.xlsx')
+        self.wb.save(f"{item['clk_url']}.xlsx")
         return item
 
 class EdgarcsvPipeline(object):
