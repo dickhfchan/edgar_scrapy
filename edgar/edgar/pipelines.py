@@ -20,7 +20,9 @@ class Edgarxlsxspider(object):
         # for info in line:
         #     self.ws.append(info)
         self.ws.append(line)
-        self.wb.save(f"{item['clk_url']}.xlsx")
+        pattern = re.compile(r'\d+\.?\d*')
+        clk = pattern.findall(item['clk'])[0] if len(pattern.findall(item['clk']))>0 else item['clk']
+        self.wb.save(f"{clk}.xlsx".replace("'",''))
         return item
 
 class EdgarcsvPipeline(object):
