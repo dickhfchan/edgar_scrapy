@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import scrapy
 import w3lib.html
-import re
+import re, math
 from edgar.items import EdgarItem
 from scrapy.shell import inspect_response
 
@@ -128,11 +128,10 @@ class EdgarspiderSpider(scrapy.Spider):
                                   if re.match(r'^-?\d+(?:\.\d+)?$', element.strip()) is None]
             # Remove blank list values
             item_seven_final = list(filter(None, item_seven_no_ints))
-            # file_name = response.url.split('/')[-1].split('.')[0]
-            # with open(f'text_files/{file_name}.txt', 'w') as f:
-            #     f.write(r'\n'.join(item_seven_final))
             is_item_seven = 1 if len(item_seven_final) < 1500 else 0
-            item['seven_body'] = ''.join(item_seven_final)
+            # item['seven_body'] = ''.join(item_seven_final)
+            seven_body = ''.join(item_seven_final)
+            item['seven_body_number'] = math.ceil(len(seven_body)/30000)
             item['is_item_seven'] = is_item_seven
             yield item
 #caiyi
