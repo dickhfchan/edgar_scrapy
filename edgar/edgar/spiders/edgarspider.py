@@ -131,7 +131,43 @@ class EdgarspiderSpider(scrapy.Spider):
             is_item_seven = 1 if len(item_seven_final) < 1500 else 0
             # item['seven_body'] = ''.join(item_seven_final)
             seven_body = ''.join(item_seven_final)
-            item['seven_body_number'] = math.ceil(len(seven_body)/30000)
+            seven_body_number = math.ceil(len(seven_body)/30000)
+            item['seven_body_number'] = seven_body_number
+            datas = []
+            for i in range(seven_body_number):
+                datas.append(seven_body[i*30000:30000*(i+1)])
+            try:
+                item['seven_body_1'] = seven_body[0]
+            except:
+                item['seven_body_1'] = ''
+            try:
+                item['seven_body_2'] = seven_body[1]
+            except:
+                item['seven_body_2'] = ''
+            try:
+                item['seven_body_3'] = seven_body[2]
+            except:
+                item['seven_body_3'] = ''
+            try:
+                item['seven_body_4'] = seven_body[3]
+            except:
+                item['seven_body_4'] = ''
+            try:
+                item['seven_body_5'] = seven_body[4]
+            except:
+                item['seven_body_5'] = ''
+            try:
+                item['seven_body_6'] = seven_body[5]
+            except:
+                item['seven_body_6'] = ''
+            try:
+                item['seven_body_7'] = seven_body[6]
+            except:
+                item['seven_body_7'] = ''
+            try:
+                item['seven_body_8'] = seven_body[7]
+            except:
+                item['seven_body_8'] = ''
             item['is_item_seven'] = is_item_seven
             yield item
 #caiyi
