@@ -7,6 +7,7 @@
 from scrapy.exporters import CsvItemExporter
 from cassandra.cluster import Cluster
 from openpyxl import Workbook
+import re
 
 class Edgarxlsxspider(object):
     wb = Workbook()
