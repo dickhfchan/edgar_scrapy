@@ -12,12 +12,16 @@ import re
 class Edgarxlsxspider(object):
     wb = Workbook()
     ws = wb.active
-    ws.append(['company','date','type','clk','clk_url','ten_year_url','body_url','seven_body_number','is_item_seven'])
+    ws.append(['company','date','type','clk','clk_url','ten_year_url','body_url','seven_body_number',\
+               'seven_body_1','seven_body_2','seven_body_3','seven_body_4','seven_body_5',\
+               'seven_body_6','seven_body_7','seven_body_8','is_item_seven'])
 
     def process_item(self, item, spider):
         line = [item['company'], item['date'], item['type'], item['clk'], \
                 item['clk_url'], item['ten_year_url'], item['body_url'], \
-                item['seven_body_number'],item['is_item_seven']]
+                item['seven_body_number'],item['seven_body_1'],item['seven_body_2'],\
+                item['seven_body_3'],item['seven_body_4'],item['seven_body_5'],\
+                item['seven_body_6'],item['seven_body_7'],item['seven_body_8'],item['is_item_seven']]
         # for info in line:
         #     self.ws.append(info)
         self.ws.append(line)

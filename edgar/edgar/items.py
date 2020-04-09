@@ -20,6 +20,14 @@ class EdgarItem(scrapy.Item):
     type = scrapy.Field()
     body = scrapy.Field()
     seven_body_number = scrapy.Field()
+    seven_body_1 = scrapy.Field()
+    seven_body_2 = scrapy.Field()
+    seven_body_3 = scrapy.Field()
+    seven_body_4 = scrapy.Field()
+    seven_body_5 = scrapy.Field()
+    seven_body_6 = scrapy.Field()
+    seven_body_7 = scrapy.Field()
+    seven_body_8 = scrapy.Field()
     is_item_seven = scrapy.Field()
 
 class Hangseng(scrapy.Item):

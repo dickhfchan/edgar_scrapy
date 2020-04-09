@@ -137,35 +137,35 @@ class EdgarspiderSpider(scrapy.Spider):
             for i in range(seven_body_number):
                 datas.append(seven_body[i*30000:30000*(i+1)])
             try:
-                item['seven_body_1'] = seven_body[0]
+                item['seven_body_1'] = datas[0]
             except:
                 item['seven_body_1'] = ''
             try:
-                item['seven_body_2'] = seven_body[1]
+                item['seven_body_2'] = datas[1]
             except:
                 item['seven_body_2'] = ''
             try:
-                item['seven_body_3'] = seven_body[2]
+                item['seven_body_3'] = datas[2]
             except:
                 item['seven_body_3'] = ''
             try:
-                item['seven_body_4'] = seven_body[3]
+                item['seven_body_4'] = datas[3]
             except:
                 item['seven_body_4'] = ''
             try:
-                item['seven_body_5'] = seven_body[4]
+                item['seven_body_5'] = datas[4]
             except:
                 item['seven_body_5'] = ''
             try:
-                item['seven_body_6'] = seven_body[5]
+                item['seven_body_6'] = datas[5]
             except:
                 item['seven_body_6'] = ''
             try:
-                item['seven_body_7'] = seven_body[6]
+                item['seven_body_7'] = datas[6]
             except:
                 item['seven_body_7'] = ''
             try:
-                item['seven_body_8'] = seven_body[7]
+                item['seven_body_8'] = datas[7]
             except:
                 item['seven_body_8'] = ''
             item['is_item_seven'] = is_item_seven
