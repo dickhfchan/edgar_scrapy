@@ -10,11 +10,11 @@ class EdgarspiderSpider(scrapy.Spider):
     name = 'edgarspider'
     # allowed_domains = [''https://en.wikipedia.org/']
     start_urls = ['https://en.wikipedia.org/wiki/List_of_S%26P_500_companies']
-    custom_settings = {
-        'ITEM_PIPELINES': {
-                'edgar.pipelines.Edgarxlsxspider': 400
-                }
-        }
+    # custom_settings = {
+    #     'ITEM_PIPELINES': {
+    #             'edgar.pipelines.Edgarxlsxspider': 400
+    #             }
+    #     }
 
     def clean_html(self, text) -> str:
         # body_without_tables = w3lib.html.remove_tags_with_content(text, which_ones=('table',))
@@ -170,51 +170,3 @@ class EdgarspiderSpider(scrapy.Spider):
                 item['seven_body_8'] = ''
             item['is_item_seven'] = is_item_seven
             yield item
-#caiyi
-    # def parse_year_url(self, response):
-    #     # get body all types
-    #     types = response.xpath('//table/tr/td[4]/text()').extract()
-    #     # get all urls
-    #     Documents = response.xpath('//table/tr/td[3]/a/@href').extract()
-    #     clk = response.meta['clk']
-    #     clk_url = response.meta['clk_url']
-    #     date = response.meta['date']
-    #     ten_year_url = response.url
-    #     for inx in range(len(types)):
-    #         # get type is 10-k the url
-    #         if types[inx] == '10-K':
-    #             pageurl = f'https://www.sec.gov{Documents[inx]}'
-    #             yield scrapy.Request(url=pageurl, callback=self.parse_bodys,meta = {'clk':clk,'clk_url':clk_url,'date':date,'ten_year_url':ten_year_url})
-    # def parse_bodys(self, response):
-    #     item = EdgarItem()
-    #     item['clk'] = response.meta['clk']
-    #     item['clk_url'] = response.meta['clk_url']
-    #     item['ten_year_url'] = response.meta['ten_year_url']
-    #     item['date'] = response.meta['date']
-    #     url = response.url
-    #     # Judge url end is pdf format,Do not handle such pdf's url
-    #     if url.endswith('pdf'):
-    #         item['body_url'] = url
-    #         item['seven_body'] = 'Non pdf'
-    #         item['sevenA_body'] = 'Non pdf'
-    #         yield item
-    #     else:
-    #         item['body_url'] = url
-    #         # re Match all html tags,eg:<a></a>
-    #         re_h=re.compile('</?\w+[^>]*>')
-    #         # re Filter all html tags
-    #         bodys = re_h.sub(' ',response.text)
-    #         # re Match all html comment tags,eg:<!--123-->
-    #         re_comment=re.compile('<!--[^>]*-->')
-    #         # re Filter all html comment tags
-    #         body = re_comment.sub('',bodys)
-    #         # re Filter all illegal characters
-    #         s = r'(\n|\r|\xa0|/s/|\t|&nbsp;|Table of Contents|&#\d*;)'
-    #         content = re.sub(s,' ',body)
-    #         # re Match item 7 content
-    #         seven = re.findall('(Item 7\.[\s\S]+?)Item 7A\.',content,re.I)
-    #         # re Match item 7A content
-    #         sevenA = re.findall('(Item 7A\.[\s\S]+?)Item 8\.',content,re.I)
-    #         item['seven_body'] = seven[0] if len(seven) == 1 else seven[1]
-    #         item['sevenA_body'] = sevenA[0] if len(sevenA) == 1 else sevenA[1]
-    #         yield item

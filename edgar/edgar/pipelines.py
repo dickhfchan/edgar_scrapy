@@ -9,6 +9,19 @@ from cassandra.cluster import Cluster
 from openpyxl import Workbook
 import re
 
+class Edgartestspider(object):
+    wb = Workbook()
+    ws = wb.active
+    ws.append(['body_url','seven_body','is_item_seven'])
+
+    def process_item(self, item, spider):
+        line = [item['body_url'], item['seven_body'], item['is_item_seven']]
+        # for info in line:
+        #     self.ws.append(info)
+        self.ws.append(line)
+        self.wb.save("edgar.xlsx")
+        return item
+
 class Edgarxlsxspider(object):
     wb = Workbook()
     ws = wb.active
