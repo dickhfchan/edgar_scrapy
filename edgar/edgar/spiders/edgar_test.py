@@ -79,5 +79,5 @@ class EdgarTestSpider(scrapy.Spider):
         is_item_seven = 1 if len(item_seven_final) < 1500 else 0
         item['seven_body'] = ''.join(item_seven_final)
         item['is_item_seven'] = is_item_seven
-        item['url'] = response.url
+        item['body_url'] = response.url
         yield item
